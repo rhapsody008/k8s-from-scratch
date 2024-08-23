@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  controlplane:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: controlplane
+    privileged: true
+    networks:
+      k8s-network:
+        ipv4_address: 172.18.0.2
+    command: /bin/bash -c "while true; do sleep 1000; done"
+    volumes:
+      - ./controlplane_ssh_key:/root/.ssh/id_rsa
+      - ./controlplane_ssh_key.pub:/root/.ssh/id_rsa.pub
+
+  nodealpha:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: nodealpha
+    privileged: true
+    networks:
+      k8s-network:
+        ipv4_address: 172.18.0.3
+    command: /bin/bash -c "while true; do sleep 1000; done"
+    volumes:
+      - ./controlplane_ssh_key:/root/.ssh/id_rsa
+      - ./controlplane_ssh_key.pub:/root/.ssh/id_rsa.pub
+
+  nodebeta:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: nodebeta
+    privileged: true
+    networks:
+      k8s-network:
+        ipv4_address: 172.18.0.4
+    command: /bin/bash -c "while true; do sleep 1000; done"
+    volumes:
+      - ./controlplane_ssh_key:/root/.ssh/id_rsa
+      - ./controlplane_ssh_key.pub:/root/.ssh/id_rsa.pub
+
+networks:
+  k8s-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.18.0.0/16
