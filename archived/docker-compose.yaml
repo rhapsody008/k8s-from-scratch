@@ -1,0 +1,49 @@
+version: '3.8'
+
+services:
+  controlplane:
+    hostname: controlplane
+    image: k8s-node-image
+    container_name: controlplane
+    privileged: true
+    networks:
+      k8s-network:
+        ipv4_address: 172.18.0.2
+    dns:
+      - 8.8.8.8
+    volumes:
+      - ./controlplane_ssh_key:/root/.ssh/id_rsa
+      - ./controlplane_ssh_key.pub:/root/.ssh/id_rsa.pub
+
+  nodealpha:
+    hostname: nodealpha
+    image: k8s-node-image
+    container_name: nodealpha
+    privileged: true
+    networks:
+      k8s-network:
+        ipv4_address: 172.18.0.3
+    dns:
+      - 8.8.8.8
+    volumes:
+      - ./controlplane_ssh_key.pub:/root/.ssh/authorized_keys
+
+  nodebeta:
+    hostname: nodebeta
+    image: k8s-node-image
+    container_name: nodebeta
+    privileged: true
+    networks:
+      k8s-network:
+        ipv4_address: 172.18.0.4
+    dns:
+      - 8.8.8.8
+    volumes:
+      - ./controlplane_ssh_key.pub:/root/.ssh/authorized_keys
+
+networks:
+  k8s-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.18.0.0/16
