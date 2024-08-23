@@ -33,23 +33,3 @@ aws ssm start-session \
 ###########################
 # Container Runtime Setup #
 ###########################
-
-download-cri:
-	mkdir -p /opt/src && \
-    cd /opt/src && \
-    curl -LO https://github.com/containerd/containerd/releases/download/v1.7.20/containerd-1.7.20-linux-arm64.tar.gz && \
-  	curl -LO https://raw.githubusercontent.com/containerd/containerd/main/containerd.service && \
-  	curl -LO https://github.com/opencontainers/runc/releases/download/v1.1.13/runc.arm64 && \
-  	curl -LO https://github.com/containernetworking/plugins/releases/download/v1.5.1/cni-plugins-linux-arm64-v1.5.1.tgz
-
-install-cri:
-	cd /opt/src && \
-  	tar Czxvf /usr/local containerd-1.7.20-linux-arm64.tar.gz && \
-  	mv containerd.service /lib/systemd/system/containerd.service && \
-  	install -m 755 runc.arm64 /usr/local/sbin/runc && \
-  	mkdir -p /opt/cni/bin && \
-  	tar Cxzvf /opt/cni/bin cni-plugins-linux-arm64-v1.5.1.tgz
-
-load-cri:
-	systemctl daemon-reload
-	systemctl enable --now containerd

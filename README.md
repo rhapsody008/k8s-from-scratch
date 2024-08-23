@@ -8,23 +8,23 @@ a Makefile to record actions
 1.31
 
 ### Container Runtime
-CRI: containerd
+CRI: containerd (nodes/loadcri.sh)
 
 ### Nodes
 3 AWS EC2 instances; Nodes should be in the same network with Internet access; master node can ssh into worker node
 
-- Network: k8s-network (172.18.0.0/16)
-- Master node: controlplane (172.18.0.2)
+- Network: VPC (10.0.2.0/24)
+- Master node: controlplane (10.0.2.11)
   - etcd
   - kube-apiserver
   - kube-scheduler
   - kube-controller-manager
   - kubelet
   - kubectl
-- Worker node: nodealpha (172.18.0.3)
+- Worker node: nodealpha (10.0.2.12)
   - kubelet
   - kube-proxy (as ds)
-- Worker node: nodebeta (172.18.0.4)
+- Worker node: nodebeta (10.0.2.13)
   - kubelet
   - kube-proxy (as ds)
 
@@ -43,7 +43,7 @@ CRI: containerd
 
 ## Deploy
 
-### Setup Docker container environment for nodes
+### Setup Nodes and Container Runtime for nodes
 - Directory: ./nodes
 
 - command to provision the nodes: 
