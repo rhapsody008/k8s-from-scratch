@@ -55,19 +55,19 @@ Network Information:
 ## Deploy
 
 ### Startup Nodes and Container Runtime for nodes
-- Directory: ./nodes
+Directory: ./nodes
 
-- command to start up and setup container runtime on nodes: 
+1. start up and setup container runtime on nodes: 
   ```
   make startup
   ```
 
-- command to bring down the nodes:
+2. bring down the nodes:
   ```
   make cleanup
   ```
 
-- command to connect to master-node:
+3. connect to master-node:
   ```
   make connect
   ```
@@ -79,8 +79,8 @@ The container runtime has been setup via EC2 user data in [nodes/master-bootstra
   make connect
   sudo su
   ```
-**!!The following commands are run inside master-node**
-2. Check containerd status:
+
+2. In master node, check containerd status:
   ```
   systemctl status containerd
   ```
@@ -92,15 +92,18 @@ The container runtime has been setup via EC2 user data in [nodes/master-bootstra
   ```
 
 2. Prepare Certificates: 
-No Makefile step created as this is designed to be run on root
+
+No Makefile step created as this is designed to be run on root.
+
 Docs: [docs/Certificate.md](docs/Certificate.md)
-- Connect to master-node and use root
+
+Connect to master-node and use root:
   ```
   make connect
   sudo su
   ```
-  
-- Execute cert generation scripts:
+
+Execute cert generation scripts:
   ```
   cd /opt/config/master-scripts
   chmod +x generate-certs.sh
