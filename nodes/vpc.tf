@@ -15,6 +15,14 @@ resource "aws_eip" "k8s_nat_eip" {
   tags   = var.tags
 }
 
+resource "aws_eip" "master_node_eip" {
+  domain = "vpc"
+
+  instance                  = aws_instance.master_node.id
+  associate_with_private_ip = var.master_node_private_ip
+  depends_on                = [aws_internet_gateway.k8s_igw]
+}
+
 resource "aws_nat_gateway" "k8s_nat_gateway" {
   allocation_id = aws_eip.k8s_nat_eip.id
   subnet_id     = aws_subnet.k8s_public_subnet.id
@@ -82,7 +90,7 @@ resource "aws_security_group" "master_node_sg" {
     from_port   = 6443
     to_port     = 6443
     protocol    = "tcp"
-    cidr_blocks = [var.private_subnet_cidr]
+    cidr_blocks = [var.public_subnet_cidr,var.private_subnet_cidr]
   }
 
   ingress {
@@ -90,7 +98,7 @@ resource "aws_security_group" "master_node_sg" {
     from_port   = 2379
     to_port     = 2380
     protocol    = "tcp"
-    cidr_blocks = [var.private_subnet_cidr]
+    cidr_blocks = [var.public_subnet_cidr,var.private_subnet_cidr]
   }
 
   egress {
@@ -120,7 +128,7 @@ resource "aws_security_group" "worker_node_sg" {
     from_port   = 10250
     to_port     = 10250
     protocol    = "tcp"
-    cidr_blocks = [var.private_subnet_cidr]
+    cidr_blocks = [var.public_subnet_cidr,var.private_subnet_cidr]
   }
 
   ingress {

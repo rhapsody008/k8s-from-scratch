@@ -38,3 +38,6 @@ terraform.rc
 
 # Specific
 **/.terraform.lock.hcl
+
+# Key files
+nodes/keys/*

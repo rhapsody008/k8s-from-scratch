@@ -31,6 +31,7 @@ echo 'runc installed!'
 echo 'Installing cni-plugin...'
 
 mkdir -p /opt/cni/bin
+mkdir -p /etc/cni/net.d
 tar Cxzvf /opt/cni/bin cni-plugins-linux-arm64-v1.5.1.tgz
 
 echo 'cni-plugin installed!'

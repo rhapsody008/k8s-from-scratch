@@ -4,33 +4,44 @@ a Makefile to record actions
 
 ## Design
 
-### Version
-1.31
+### Version: 1.31
+https://kubernetes.io/releases/download/
 
-### Container Runtime
-CRI: containerd (nodes/loadcri.sh)
+### Container Runtime Interface: containerd
+CRI: containerd with runc and cni-plugin
+https://github.com/containerd/containerd/blob/main/docs/getting-started.md
 
-### Nodes
-3 AWS EC2 instances; Nodes should be in the same network with Internet access; master node can ssh into worker node
+### Nodes and Node Networking
+Design:
+- 3 AWS EC2 instances (Ubuntu24.04, t4g.nano); 
+- Nodes should be in the same network with Internet access; 
+- master node can ssh into worker node
 
-- Network: VPC (10.0.2.0/24)
-- Master node: controlplane (10.0.2.11)
-  - etcd
-  - kube-apiserver
-  - kube-scheduler
-  - kube-controller-manager
-  - kubelet
+Network Information:
+- Network: VPC (public_subnet: 10.0.1.0/24, private_subnet: 10.0.2.0/24)
+- Master node: controlplane (10.0.1.10)
+  - etcd (:2379)
+  - kube-apiserver (:6443)
+  - kube-scheduler (:10259)
+  - kube-controller-manager (:10257)
+  - kubelet (:10250)
   - kubectl
-- Worker node: nodealpha (10.0.2.12)
-  - kubelet
-  - kube-proxy (as ds)
-- Worker node: nodebeta (10.0.2.13)
-  - kubelet
-  - kube-proxy (as ds)
+- Worker node: worker-node-1 (10.0.2.11)
+  - kubelet (:10250)
+  - kube-proxy (as ds) (:10256)
+- Worker node: worker-node-2 (10.0.2.12)
+  - kubelet (:10250)
+  - kube-proxy (as ds) (:10256)
+
 
 ### Control Plane
 
-### Networking
+### K8s Cluster Networking
+- Pod IP Range: 192.168.0.0/16 
+- Service IP Range: 172.16.0.0/16
+- clusterDNS: 172.16.0.10
+- kube-apiserver: 172.16.0.1
+
 - Cilium as CNI
 - Cilium Ingress Controller? explore
 
@@ -62,28 +73,38 @@ CRI: containerd (nodes/loadcri.sh)
   ```
 
 ### Check Container Runtime Setup
-- Connect to master-node:
+The container runtime has been setup via EC2 user data in [nodes/loadcri.sh](nodes/loadcri.sh)
+1. Connect to master-node and use root:
   ```
   make connect
   sudo su
   ```
-
-- Check containerd status:
+**!!The following commands are run inside master-node**
+2. Check containerd status:
   ```
   systemctl status containerd
   ```
 
-### Control Plane Setup
-- Setup kubelet:
+### Master Node Setup
+
+1. Prepare Certificates:
+Follow steps in [docs/Certificate.md](docs/Certificate.md)
+
+2. Setup kubelet:
   ```
   curl -LO https://dl.k8s.io/release/v1.31.0/bin/linux/arm64/kubelet && \
   chmod +x kubelet && \
   mv kubelet /usr/local/bin/
   ```
+3. Configure kubelet:
+  ```
+  mkdir -p /var/lib/kubernetes
 
-- Setup kubectl:
+  ```
+4. Setup kubectl:
   ```
   curl -LO https://dl.k8s.io/release/v1.31.0/bin/linux/amd64/kubectl
   chmod +x kubectl
   mv kubectl /usr/local/bin/
   ```
+

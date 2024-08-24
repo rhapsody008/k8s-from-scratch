@@ -6,7 +6,7 @@
     "ec2_ami_id": "ami-0f0a689dea27d9dc8",
     "ec2_type": "t4g.nano",
 
-    "master_node_private_ip": "10.0.2.11",
-    "worker_node_1_private_ip": "10.0.2.12",
-    "worker_node_2_private_ip": "10.0.2.13"
+    "master_node_private_ip": "10.0.1.10",
+    "worker_node_1_private_ip": "10.0.2.11",
+    "worker_node_2_private_ip": "10.0.2.12"
 }
