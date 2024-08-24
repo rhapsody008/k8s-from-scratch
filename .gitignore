@@ -41,3 +41,6 @@ terraform.rc
 
 # Key files
 nodes/keys/*
+
+# Others
+nodes/scripts/worker-bootstrap.sh
