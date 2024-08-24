@@ -1,8 +1,15 @@
 #!/bin/sh
 
+# Create directories
 mkdir -p /opt/src
+mkdir -p /opt/cni/bin
+mkdir -p /etc/cni/net.d
+mkdir -p /opt/config 
+
+# WORK DIR
 cd /opt/src
 
+# Download resources
 echo 'Downloading CRI resources...'
 
 curl -LO https://github.com/containerd/containerd/releases/download/v1.7.20/containerd-1.7.20-linux-arm64.tar.gz
@@ -12,34 +19,24 @@ curl -LO https://github.com/containernetworking/plugins/releases/download/v1.5.1
 
 echo 'Downloaded!'
 
-
+# Install resources
 echo 'Installing containerd...'
-
 tar Czxvf /usr/local /opt/src/containerd-1.7.20-linux-arm64.tar.gz
 mv /opt/src/containerd.service /lib/systemd/system/containerd.service
-
 echo 'containerd installed!'
 
 
 echo 'Installing runc...'
-
 install -m 755 runc.arm64 /usr/local/sbin/runc
-
 echo 'runc installed!'
 
 
 echo 'Installing cni-plugin...'
-
-mkdir -p /opt/cni/bin
-mkdir -p /etc/cni/net.d
 tar Cxzvf /opt/cni/bin cni-plugins-linux-arm64-v1.5.1.tgz
-
 echo 'cni-plugin installed!'
 
 
 echo 'Starting containerd...'
-
 systemctl daemon-reload
 systemctl enable --now containerd
-
 echo 'containerd started!'

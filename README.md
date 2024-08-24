@@ -54,17 +54,17 @@ Network Information:
 
 ## Deploy
 
-### Setup Nodes and Container Runtime for nodes
+### Startup Nodes and Container Runtime for nodes
 - Directory: ./nodes
 
-- command to provision the nodes: 
+- command to start up and setup container runtime on nodes: 
   ```
-  make apply
+  make startup
   ```
 
 - command to bring down the nodes:
   ```
-  make destroy
+  make cleanup
   ```
 
 - command to connect to master-node:
@@ -73,7 +73,7 @@ Network Information:
   ```
 
 ### Check Container Runtime Setup
-The container runtime has been setup via EC2 user data in [nodes/loadcri.sh](nodes/loadcri.sh)
+The container runtime has been setup via EC2 user data in [nodes/master-bootstrap.sh](nodes/master-bootstrap.sh)
 1. Connect to master-node and use root:
   ```
   make connect
@@ -85,11 +85,29 @@ The container runtime has been setup via EC2 user data in [nodes/loadcri.sh](nod
   systemctl status containerd
   ```
 
-### Master Node Setup
+### Prepare Nodes K8s Components;
+1. Prepare directory and copy files into master node:
+  ```
+  make prep-files
+  ```
 
-1. Prepare Certificates:
-Follow steps in [docs/Certificate.md](docs/Certificate.md)
+2. Prepare Certificates: 
+No Makefile step created as this is designed to be run on root
+Docs: [docs/Certificate.md](docs/Certificate.md)
+- Connect to master-node and use root
+  ```
+  make connect
+  sudo su
+  ```
+  
+- Execute cert generation scripts:
+  ```
+  cd /opt/config/master-scripts
+  chmod +x generate-certs.sh
+  ./generate-certs.sh
+  ```
 
+### Node Kubelet Setup:
 2. Setup kubelet:
   ```
   curl -LO https://dl.k8s.io/release/v1.31.0/bin/linux/arm64/kubelet && \

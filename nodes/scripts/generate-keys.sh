@@ -5,7 +5,7 @@ mkdir -p $REPO_DIR/$KEY_DIR
 export SSH_KEY="$REPO_DIR/$KEY_DIR/$KEY_NAME"
 export MASTER_WORKER_KEY="$REPO_DIR/$KEY_DIR/$MASTER_KEY_NAME"
 
-if [ -f $KEY_FULL.pub ]; then \
+if [ -f $SSH_KEY.pub ]; then \
 	chmod 0400 $SSH_KEY; \
 	echo "Key already exists, skipping..."; \
 else \

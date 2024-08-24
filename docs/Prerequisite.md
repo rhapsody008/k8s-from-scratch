@@ -10,3 +10,6 @@ AWS:
 - AWSCLIv2
 - Terraform
 - sshgen
+
+## misc
+- make

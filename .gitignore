@@ -44,3 +44,4 @@ nodes/keys/*
 
 # Others
 nodes/scripts/worker-bootstrap.sh
+tmp/*
