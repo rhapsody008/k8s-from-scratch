@@ -138,9 +138,9 @@ Execute cert generation scripts:
 3. Configure kubelet:
   ```
   mkdir -p /var/lib/kubernetes
-  cp /opt/config/master/kubeconfig /var/lib/kubernetes/kubeconfig
-  cp /opt/config/master/kubelet-config.yaml /var/lib/kubernetes/kubelet-config.yaml
-  cp /opt/config/master/kubelet.service /lib/systemd/system/kubelet.service
+  cp /opt/config/master/kubelet.conf /etc/kubernetes
+  cp /opt/config/master/kubelet-config.yaml /var/lib/kubernetes
+  cp /opt/config/master/kubelet.service /lib/systemd/system
   ```
 
 4. Start kubelet service:
@@ -170,4 +170,10 @@ Execute cert generation scripts:
 4. Start `kube-apiserver` by copying kube-apiserver manifest file:
   ```
   cp /opt/config/master/kube-apiserver.yaml /etc/kubernetes/manifests/
+  ```
+
+5. Prepare and start `kube-controller-manager` by copying files:
+  ```
+  cp /opt/config/master/controller-manager.conf /etc/kubernetes
+  cp /opt/config/master/kube-controller-manager.yaml /etc/kubernetes/manifests
   ```

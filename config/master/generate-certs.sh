@@ -87,19 +87,19 @@ openssl x509 -req -in apiserver-etcd-client.csr -CA etcd/ca.crt -CAkey etcd/ca.k
 # master-node-kubelet-client
 echo "Generating certificates for master-node-kubelet-client..."
 openssl genrsa -out master-client.key 2048
-openssl req -new -key master-client.key -subj "/CN=system:node:master" -out master-client.csr
+openssl req -new -key master-client.key -subj "/CN=system:node:master/O=system:nodes" -out master-client.csr
 openssl x509 -req -in master-client.csr -CA ca.crt -CAkey ca.key -out master-client.crt
 
 # worker-node-1-kubelet-client
 echo "Generating certificates for worker-node-1-kubelet-client..."
 openssl genrsa -out worker1-client.key 2048
-openssl req -new -key worker1-client.key -subj "/CN=system:node:worker1" -out worker1-client.csr
+openssl req -new -key worker1-client.key -subj "/CN=system:node:worker1/O=system:nodes" -out worker1-client.csr
 openssl x509 -req -in worker1-client.csr -CA ca.crt -CAkey ca.key -out worker1-client.crt
 
 # worker-node-2-kubelet-client
 echo "Generating certificates for worker-node-2-kubelet-client..."
 openssl genrsa -out worker2-client.key 2048
-openssl req -new -key worker2-client.key -subj "/CN=system:node:worker2" -out worker2-client.csr
+openssl req -new -key worker2-client.key -subj "/CN=system:node:worker2/O=system:nodes" -out worker2-client.csr
 openssl x509 -req -in worker2-client.csr -CA ca.crt -CAkey ca.key -out worker2-client.crt
 
 # etcd server

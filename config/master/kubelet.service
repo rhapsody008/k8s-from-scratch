@@ -7,7 +7,7 @@ Wants=network-online.target
 [Service]
 ExecStart=/usr/local/bin/kubelet \
   --config=/var/lib/kubernetes/kubelet-config.yaml \
-  --kubeconfig=/var/lib/kubernetes/kubeconfig \
+  --kubeconfig=/etc/kubernetes/kubelet.conf \
   --runtime-cgroups=/system.slice/containerd.service \
   --hostname-override=master
 Restart=always
