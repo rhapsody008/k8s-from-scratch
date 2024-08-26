@@ -1,10 +1,20 @@
 #!/bin/sh
 
 # Create directories
-mkdir -p /opt/src
-mkdir -p /opt/cni/bin
-mkdir -p /etc/cni/net.d
-mkdir -p /opt/config 
+mkdir -p \
+/opt/src \
+/opt/cni/bin \
+/etc/cni/net.d \
+/etc/kubernetes/manifests \
+etc/kubernetes/pki \
+/opt/config \
+/var/lib/kubernetes \
+/var/lib/etcd \
+/etc/ssl/certs \
+/etc/ca-certificates \
+/usr/local/share/ca-certificates \
+/usr/share/ca-certificates
+chown ubuntu:ubuntu /opt/config
 
 # WORK DIR
 cd /opt/src
@@ -16,12 +26,14 @@ curl -LO https://github.com/containerd/containerd/releases/download/v1.7.20/cont
 curl -LO https://raw.githubusercontent.com/containerd/containerd/main/containerd.service
 curl -LO https://github.com/opencontainers/runc/releases/download/v1.1.13/runc.arm64
 curl -LO https://github.com/containernetworking/plugins/releases/download/v1.5.1/cni-plugins-linux-arm64-v1.5.1.tgz
+curl -LO https://github.com/containerd/nerdctl/releases/download/v1.7.6/nerdctl-1.7.6-linux-arm64.tar.gz
 
 echo 'Downloaded!'
 
 # Install resources
-echo 'Installing containerd...'
+echo 'Installing containerd and nerdctl...'
 tar Czxvf /usr/local /opt/src/containerd-1.7.20-linux-arm64.tar.gz
+tar Cxzvf /usr/local/bin nerdctl-1.7.6-linux-arm64.tar.gz
 mv /opt/src/containerd.service /lib/systemd/system/containerd.service
 echo 'containerd installed!'
 
@@ -30,13 +42,48 @@ echo 'Installing runc...'
 install -m 755 runc.arm64 /usr/local/sbin/runc
 echo 'runc installed!'
 
+echo 'Starting containerd...'
+systemctl daemon-reload
+systemctl enable --now containerd
+echo 'containerd started!'
 
 echo 'Installing cni-plugin...'
 tar Cxzvf /opt/cni/bin cni-plugins-linux-arm64-v1.5.1.tgz
 echo 'cni-plugin installed!'
 
+set -eu -o pipefail
 
-echo 'Starting containerd...'
-systemctl daemon-reload
-systemctl enable --now containerd
-echo 'containerd started!'
+CNI_DIR=/opt/cni
+CNI_CONFIG_DIR=/etc/cni/net.d 
+
+cat << EOF | tee $CNI_CONFIG_DIR/10-containerd-net.conflist
+{
+  "cniVersion": "1.0.0",
+  "name": "containerd-net",
+  "plugins": [
+    {
+      "type": "bridge",
+      "bridge": "cni0",
+      "isGateway": true,
+      "ipMasq": true,
+      "promiscMode": true,
+      "ipam": {
+        "type": "host-local",
+        "ranges": [
+          [{
+            "subnet": "10.0.1.0/23"
+          }]
+        ],
+        "routes": [
+          { "dst": "0.0.0.0/0" },
+          { "dst": "::/0" }
+        ]
+      }
+    },
+    {
+      "type": "portmap",
+      "capabilities": {"portMappings": true}
+    }
+  ]
+}
+EOF

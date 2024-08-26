@@ -91,9 +91,8 @@ The container runtime has been setup via EC2 user data in [nodes/master-bootstra
   make prep-files
   ```
 
+**No Makefile step created from this onwards as this is designed to be run on root.**
 2. Prepare Certificates: 
-
-No Makefile step created as this is designed to be run on root.
 
 Docs: [docs/Certificate.md](docs/Certificate.md)
 
@@ -105,27 +104,70 @@ Connect to master-node and use root:
 
 Execute cert generation scripts:
   ```
-  cd /opt/config/master-scripts
-  chmod +x generate-certs.sh
-  ./generate-certs.sh
+  chmod +x /opt/config/master/generate-certs.sh
+  /opt/config/master/generate-certs.sh
   ```
 
+### Install Kubectl on Master node and Setup admin user kubeconfig
+  ```
+  cd /opt/src
+  curl -LO https://dl.k8s.io/release/v1.31.0/bin/linux/arm64/kubectl
+  chmod +x kubectl
+  mv kubectl /usr/local/bin/
+  mkdir -p /root/.kube /home/ubuntu/.kube
+  cp /opt/config/master/admin-kubeconfig /root/.kube/config
+  cp /opt/config/master/admin-kubeconfig /home/ubuntu/.kube/config
+  ```
+
+
 ### Node Kubelet Setup:
+1. If not done so, connect to master-node and use root:
+  ```
+  make connect
+  sudo su
+  ```
+
 2. Setup kubelet:
   ```
+  cd /opt/src
   curl -LO https://dl.k8s.io/release/v1.31.0/bin/linux/arm64/kubelet && \
   chmod +x kubelet && \
   mv kubelet /usr/local/bin/
   ```
+
 3. Configure kubelet:
   ```
   mkdir -p /var/lib/kubernetes
-
-  ```
-4. Setup kubectl:
-  ```
-  curl -LO https://dl.k8s.io/release/v1.31.0/bin/linux/amd64/kubectl
-  chmod +x kubectl
-  mv kubectl /usr/local/bin/
+  cp /opt/config/master/kubeconfig /var/lib/kubernetes/kubeconfig
+  cp /opt/config/master/kubelet-config.yaml /var/lib/kubernetes/kubelet-config.yaml
+  cp /opt/config/master/kubelet.service /lib/systemd/system/kubelet.service
   ```
 
+4. Start kubelet service:
+  ```
+  systemctl daemon-reload
+  systemctl enable --now kubelet
+  ```
+
+### Control plane setup
+1. If not done so, connect to master-node and use root if not done so:
+  ```
+  make connect
+  sudo su
+  ```
+
+2. Copy etcd manifest file:
+  ```
+  cp /opt/config/master/etcd.yaml /etc/kubernetes/manifests/
+
+  ```
+
+3. Wait for etcd to be up running stable:
+  ```
+  nerdctl -n k8s.io ps
+  ```
+
+4. Copy kube-apiserver manifest file:
+  ```
+  cp /opt/config/master/kube-apiserver.yaml /etc/kubernetes/manifests/
+  ```

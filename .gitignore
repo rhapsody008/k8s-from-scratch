@@ -40,8 +40,10 @@ terraform.rc
 **/.terraform.lock.hcl
 
 # Key files
+nodes/keys
 nodes/keys/*
 
 # Others
 nodes/scripts/worker-bootstrap.sh
+tmp
 tmp/*

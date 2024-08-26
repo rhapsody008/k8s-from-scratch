@@ -24,6 +24,7 @@ cleanup: destroy
 	rm -f $(REPO_DIR)/$(SCRIPT_DIR)/worker-bootstrap.sh
 	rm -rf $(REPO_DIR)/nodes/.terraform
 	rm -f $(REPO_DIR)/nodes/.terraform.lock.hcl
+	rm -rf $(REPO_DIR)/tmp
 
 init:
 	terraform -chdir=$(REPO_DIR)/nodes init
@@ -38,6 +39,7 @@ apply: keygen master-worker-comm
 	terraform -chdir=$(REPO_DIR)/nodes validate
 	terraform -chdir=$(REPO_DIR)/nodes apply -var-file=vars/k8s.json -auto-approve
 # Output Master Node Public IP
+	mkdir -p $(REPO_DIR)/tmp
 	aws ec2 describe-instances \
     --filters "Name=tag:Name,Values=master-node" "Name=instance-state-name,Values=running" \
     --query "Reservations[*].Instances[*].PublicIpAddress" \

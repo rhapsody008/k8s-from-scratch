@@ -5,7 +5,7 @@ resource "aws_key_pair" "node_key" {
 
 resource "aws_instance" "master_node" {
   ami                         = var.ec2_ami_id
-  instance_type               = var.ec2_type
+  instance_type               = var.ec2_type_master
   subnet_id                   = aws_subnet.k8s_public_subnet.id
   security_groups             = [aws_security_group.master_node_sg.id]
   associate_public_ip_address = true
@@ -23,7 +23,7 @@ resource "aws_instance" "master_node" {
 
 resource "aws_instance" "worker_node_1" {
   ami                         = var.ec2_ami_id
-  instance_type               = var.ec2_type
+  instance_type               = var.ec2_type_worker
   subnet_id                   = aws_subnet.k8s_private_subnet.id
   security_groups             = [aws_security_group.worker_node_sg.id]
   associate_public_ip_address = false
@@ -40,7 +40,7 @@ resource "aws_instance" "worker_node_1" {
 
 resource "aws_instance" "worker_node_2" {
   ami                         = var.ec2_ami_id
-  instance_type               = var.ec2_type
+  instance_type               = var.ec2_type_worker
   subnet_id                   = aws_subnet.k8s_private_subnet.id
   security_groups             = [aws_security_group.worker_node_sg.id]
   associate_public_ip_address = false

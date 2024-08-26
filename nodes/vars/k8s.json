@@ -4,7 +4,8 @@
     "private_subnet_cidr": "10.0.2.0/24",
     "ssh_ips": "116.88.0.0/16",
     "ec2_ami_id": "ami-0f0a689dea27d9dc8",
-    "ec2_type": "t4g.nano",
+    "ec2_type_master": "t4g.micro",
+    "ec2_type_worker": "t4g.nano",
 
     "master_node_private_ip": "10.0.1.10",
     "worker_node_1_private_ip": "10.0.2.11",

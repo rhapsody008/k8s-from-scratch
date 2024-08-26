@@ -14,7 +14,8 @@ variable "ssh_ips" {}
 
 variable "ec2_ami_id" {}
 
-variable "ec2_type" {}
+variable "ec2_type_master" {}
+variable "ec2_type_worker" {}
 
 variable "master_node_private_ip" {}
 
