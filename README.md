@@ -204,8 +204,9 @@ Execute cert generation scripts:
   sudo su
   ```
 
-4. copy files to correct locations
+4. set perms and copy files to correct locations
   ```
+  chown root:root /opt/cni/bin
   cp /opt/config/worker1/worker1* /etc/kubernetes/pki
   cp /opt/config/worker1/ca.crt /etc/kubernetes/pki
   cp /opt/config/worker1/kubelet.conf /etc/kubernetes
@@ -227,8 +228,9 @@ Execute cert generation scripts:
   sudo su
   ```
 
-7. copy files to correct locations
+7. set perms and copy files to correct locations
   ```
+  chown root:root /opt/cni/bin
   cp /opt/config/worker2/worker2* /etc/kubernetes/pki
   cp /opt/config/worker2/ca.crt /etc/kubernetes/pki
   cp /opt/config/worker2/kubelet.conf /etc/kubernetes
@@ -243,7 +245,20 @@ Execute cert generation scripts:
   systemctl enable --now kubelet
   ```
 
+### Kube-proxy setup
+1. If not done so, connect to master-node and use root:
+  ```
+  make connect
+  sudo su
+  ```
 
+2. copy files
+  ```
+  mkdir -p /opt/src/k8s
+  cp /opt/config/master/kube-proxy.conf /etc/kubernetes
+  cp /opt/config/master/kube-proxy.yaml /opt/src/k8s
+  kubectl apply -f /opt/src/k8s/kube-proxy.yaml
+  ```
 
 <!-- ### Cilium setup
 
@@ -270,5 +285,6 @@ cp linux-arm64/helm /usr/local/bin
 ```
 helm repo add cilium https://helm.cilium.io/
 kubectl create ns cilium
-helm install cilium cilium/cilium --namespace cilium --set kubeProxyReplacement=true --set k8sServiceHost=172.16.0.1 --set k8sServicePort=443 -->
+chown root:root /opt/cni/bin
+helm install cilium cilium/cilium --namespace cilium --set kubeProxyReplacement=true --set k8sServiceHost=10.0.0.10 --set k8sServicePort=6443 -->
 

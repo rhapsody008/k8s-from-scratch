@@ -16,6 +16,8 @@ mkdir -p \
 /usr/share/ca-certificates \
 /etc/containerd
 chown ubuntu:ubuntu /opt/config
+chown root:root /opt/cni/bin
+chmod 755 /opt/cni/bin /etc/cni/net.d
 
 # WORK DIR
 cd /opt/src
