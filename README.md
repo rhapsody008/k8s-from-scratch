@@ -18,18 +18,18 @@ Design:
 - master node can ssh into worker node
 
 Network Information:
-- Network: VPC (public_subnet: 10.0.1.0/24, private_subnet: 10.0.2.0/24)
-- Master node: controlplane (10.0.1.10)
+- Network: VPC (public_subnet: 10.0.0.0/24, private_subnet: 10.0.1.0/24)
+- Master node: controlplane (10.0.0.10)
   - etcd (:2379)
   - kube-apiserver (:6443)
   - kube-scheduler (:10259)
   - kube-controller-manager (:10257)
   - kubelet (:10250)
   - kubectl
-- Worker node: worker-node-1 (10.0.2.11)
+- Worker node: worker-node-1 (10.0.1.11)
   - kubelet (:10250)
   - kube-proxy (as ds) (:10256)
-- Worker node: worker-node-2 (10.0.2.12)
+- Worker node: worker-node-2 (10.0.1.12)
   - kubelet (:10250)
   - kube-proxy (as ds) (:10256)
 
@@ -37,7 +37,7 @@ Network Information:
 ### Control Plane
 
 ### K8s Cluster Networking
-- Pod IP Range: 192.168.0.0/16 
+- Pod IP Range: 10.0.0.0/23
 - Service IP Range: 172.16.0.0/16
 - clusterDNS: 172.16.0.10
 - kube-apiserver: 172.16.0.1

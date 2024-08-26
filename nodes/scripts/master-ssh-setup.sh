@@ -18,8 +18,8 @@ scp -i $REPO_DIR/$KEY_DIR/$KEY_NAME $REPO_DIR/$KEY_DIR/$MASTER_KEY_NAME ubuntu@$
 
 # Setup aliases for easy ssh access
 cat > $REPO_DIR/tmp/.bash_aliases << EOF
-alias goworker1="ssh -o StrictHostKeyChecking=accept-new -i $NODE_HOME_DIR/.ssh/$MASTER_KEY_NAME ubuntu@10.0.2.11"
-alias goworker2="ssh -o StrictHostKeyChecking=accept-new -i $NODE_HOME_DIR/.ssh/$MASTER_KEY_NAME ubuntu@10.0.2.12"
+alias goworker1="ssh -o StrictHostKeyChecking=accept-new -i $NODE_HOME_DIR/.ssh/$MASTER_KEY_NAME ubuntu@10.0.1.11"
+alias goworker2="ssh -o StrictHostKeyChecking=accept-new -i $NODE_HOME_DIR/.ssh/$MASTER_KEY_NAME ubuntu@10.0.1.12"
 EOF
 scp -i $REPO_DIR/$KEY_DIR/$KEY_NAME $REPO_DIR/tmp/.bash_aliases ubuntu@$MASTER_IP:$NODE_HOME_DIR/
 ssh -i $REPO_DIR/$KEY_DIR/$KEY_NAME ubuntu@$MASTER_IP source $NODE_HOME_DIR/.bashrc
