@@ -75,7 +75,7 @@ openssl x509 -req -in kube-proxy.csr -CA ca.crt -CAkey ca.key -out kube-proxy.cr
 # kube-apiserver-kubelet-client
 echo "Generating certificates for kube-apiserver-kubelet-client..."
 openssl genrsa -out apiserver-kubelet-client.key 2048
-openssl req -new -key apiserver-kubelet-client.key -subj "/CN=kube-apiserver-kubelet-client" -out apiserver-kubelet-client.csr 
+openssl req -new -key apiserver-kubelet-client.key -subj "/CN=kube-apiserver-kubelet-client/O=system:masters" -out apiserver-kubelet-client.csr 
 openssl x509 -req -in apiserver-kubelet-client.csr -CA ca.crt -CAkey ca.key -out apiserver-kubelet-client.crt 
 
 # kube-apiserver-etcd-client
@@ -164,9 +164,26 @@ openssl x509 -req -in apiserver.csr -CA ca.crt -CAkey ca.key -out apiserver.crt 
 
 # master-node-kubelet
 echo "Generating certificates for master-node-kubelet..."
+cat > master-node-openssl.cnf << EOF
+[ req ]
+req_extensions = v3_req
+distinguished_name = req_distinguished_name
+
+[ req_distinguished_name ]
+
+[ v3_req ]
+basicConstraints = CA:FALSE
+keyUsage = nonRepudiation, digitalSignature, keyEncipherment
+extendedKeyUsage = serverAuth,clientAuth
+subjectAltName = @alt_names
+
+[ alt_names ]
+IP.1 = 127.0.0.1
+IP.2 = 10.0.0.10
+EOF
 openssl genrsa -out master.key 2048
-openssl req -new -key master.key -subj "/CN=master" -out master.csr
-openssl x509 -req -in master.csr -CA ca.crt -CAkey ca.key -out master.crt
+openssl req -new -key master.key -subj "/CN=master" -out master.csr -config master-node-openssl.cnf
+openssl x509 -req -in master.csr -CA ca.crt -CAkey ca.key -out master.crt -extfile master-node-openssl.cnf -extensions v3_req
 
 # worker-node-1-kubelet
 echo "Generating certificates for worker-node-1-kubelet..."

@@ -177,3 +177,9 @@ Execute cert generation scripts:
   cp /opt/config/master/controller-manager.conf /etc/kubernetes
   cp /opt/config/master/kube-controller-manager.yaml /etc/kubernetes/manifests
   ```
+
+6. Prepare and start `kube-scheduler` by copying files:
+  ```
+  cp /opt/config/master/scheduler.conf /etc/kubernetes
+  cp /opt/config/master/kube-scheduler.yaml /etc/kubernetes/manifests
+  ```k
