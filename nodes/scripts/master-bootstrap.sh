@@ -49,9 +49,6 @@ echo 'containerd started!'
 
 echo 'Installing cni-plugin...'
 tar Cxzvf /opt/cni/bin cni-plugins-linux-arm64-v1.5.1.tgz
-echo 'cni-plugin installed!'
-
-set -eu -o pipefail
 
 CNI_DIR=/opt/cni
 CNI_CONFIG_DIR=/etc/cni/net.d 
@@ -87,3 +84,5 @@ cat << EOF | tee $CNI_CONFIG_DIR/10-containerd-net.conflist
   ]
 }
 EOF
+
+echo 'cni-plugin installed!'
