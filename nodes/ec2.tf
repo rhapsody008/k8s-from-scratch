@@ -36,6 +36,8 @@ resource "aws_instance" "worker_node_1" {
     Name = "worker-node-1"
   }
   user_data = file("scripts/worker-bootstrap.sh")
+
+  depends_on = [aws_nat_gateway.k8s_nat_gateway]
 }
 
 resource "aws_instance" "worker_node_2" {
@@ -53,4 +55,6 @@ resource "aws_instance" "worker_node_2" {
     Name = "worker-node-2"
   }
   user_data = file("scripts/worker-bootstrap.sh")
+
+  depends_on = [aws_nat_gateway.k8s_nat_gateway]
 }

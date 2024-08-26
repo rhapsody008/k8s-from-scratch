@@ -82,7 +82,7 @@ cat << EOF | tee $CNI_CONFIG_DIR/10-containerd-net.conflist
         "type": "host-local",
         "ranges": [
           [{
-            "subnet": "10.0.0.0/23"
+            "subnet": "10.100.0.0/16"
           }]
         ],
         "routes": [

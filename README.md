@@ -37,7 +37,7 @@ Network Information:
 ### Control Plane
 
 ### K8s Cluster Networking
-- Pod IP Range: 10.0.0.0/23
+- Pod IP Range: 10.100.0.0/16
 - Service IP Range: 172.16.0.0/16
 - clusterDNS: 172.16.0.10
 - kube-apiserver: 172.16.0.1
