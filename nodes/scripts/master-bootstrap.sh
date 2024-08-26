@@ -6,14 +6,15 @@ mkdir -p \
 /opt/cni/bin \
 /etc/cni/net.d \
 /etc/kubernetes/manifests \
-etc/kubernetes/pki \
+/etc/kubernetes/pki \
 /opt/config \
 /var/lib/kubernetes \
 /var/lib/etcd \
 /etc/ssl/certs \
 /etc/ca-certificates \
 /usr/local/share/ca-certificates \
-/usr/share/ca-certificates
+/usr/share/ca-certificates \
+/etc/containerd
 chown ubuntu:ubuntu /opt/config
 
 # WORK DIR
@@ -35,6 +36,19 @@ echo 'Installing containerd and nerdctl...'
 tar Czxvf /usr/local /opt/src/containerd-1.7.20-linux-arm64.tar.gz
 tar Cxzvf /usr/local/bin nerdctl-1.7.6-linux-arm64.tar.gz
 mv /opt/src/containerd.service /lib/systemd/system/containerd.service
+
+cat << EOF | tee /etc/containerd/config.toml
+version = 2
+[plugins]
+  [plugins."io.containerd.grpc.v1.cri"]
+   [plugins."io.containerd.grpc.v1.cri".containerd]
+      [plugins."io.containerd.grpc.v1.cri".containerd.runtimes]
+        [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc]
+          runtime_type = "io.containerd.runc.v2"
+          [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc.options]
+            SystemdCgroup = true
+EOF
+
 echo 'containerd installed!'
 
 

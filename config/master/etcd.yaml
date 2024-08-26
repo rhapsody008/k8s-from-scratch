@@ -18,7 +18,8 @@ spec:
     - --listen-client-urls=https://127.0.0.1:2379
     - --listen-metrics-urls=http://127.0.0.1:2381
     - --listen-peer-urls=https://127.0.0.1:2380
-    - --initial-advertise-peer-urls=https://127.0.0.1:2380
+    - --initial-cluster=default=http://127.0.0.1:2380
+    - --initial-advertise-peer-urls=http://127.0.0.1:2380
     - --peer-cert-file=/etc/kubernetes/pki/etcd/peer.crt
     - --peer-client-cert-auth=true
     - --peer-key-file=/etc/kubernetes/pki/etcd/peer.key
