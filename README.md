@@ -182,4 +182,93 @@ Execute cert generation scripts:
   ```
   cp /opt/config/master/scheduler.conf /etc/kubernetes
   cp /opt/config/master/kube-scheduler.yaml /etc/kubernetes/manifests
-  ```k
+  ```
+
+### Worker Nodes setup
+1. If not done so, connect to master-node and use root if not done so:
+  ```
+  make connect
+  sudo su
+  ```
+
+2. prepare files for worker nodes
+  ```
+  chmod +x /opt/config/master/prep-worker-files.sh
+  /opt/config/master/prep-worker-files.sh
+  ```
+
+3. connect to worker1 
+  ```
+  exit 
+  goworker1
+  sudo su
+  ```
+
+4. copy files to correct locations
+  ```
+  cp /opt/config/worker1/worker1* /etc/kubernetes/pki
+  cp /opt/config/worker1/ca.crt /etc/kubernetes/pki
+  cp /opt/config/worker1/kubelet.conf /etc/kubernetes
+  cp /opt/config/worker1/kubelet-config.yaml /var/lib/kubernetes
+  cp /opt/config/worker1/kubelet.service /lib/systemd/system
+  cp /opt/config/worker1/kubelet /usr/local/bin
+  ```
+
+5. Start kubelet service:
+  ```
+  systemctl daemon-reload
+  systemctl enable --now kubelet
+  ```
+
+6. exit to master node and connect to worker 2:
+  ```
+  exit 
+  goworker2
+  sudo su
+  ```
+
+7. copy files to correct locations
+  ```
+  cp /opt/config/worker2/worker2* /etc/kubernetes/pki
+  cp /opt/config/worker2/ca.crt /etc/kubernetes/pki
+  cp /opt/config/worker2/kubelet.conf /etc/kubernetes
+  cp /opt/config/worker2/kubelet-config.yaml /var/lib/kubernetes
+  cp /opt/config/worker2/kubelet.service /lib/systemd/system
+  cp /opt/config/worker2/kubelet /usr/local/bin
+  ```
+
+8. Start kubelet service:
+  ```
+  systemctl daemon-reload
+  systemctl enable --now kubelet
+  ```
+
+
+
+<!-- ### Cilium setup
+
+1. Install cilium-cli
+```
+cd /opt/src
+CILIUM_CLI_VERSION=$(curl -s https://raw.githubusercontent.com/cilium/cilium-cli/main/stable.txt)
+CLI_ARCH=arm64
+curl -L --fail --remote-name-all https://github.com/cilium/cilium-cli/releases/download/${CILIUM_CLI_VERSION}/cilium-linux-${CLI_ARCH}.tar.gz{,.sha256sum}
+sha256sum --check cilium-linux-${CLI_ARCH}.tar.gz.sha256sum
+sudo tar xzvfC cilium-linux-${CLI_ARCH}.tar.gz /usr/local/bin
+rm cilium-linux-${CLI_ARCH}.tar.gz{,.sha256sum}
+```
+
+2. Install Helm
+```
+cd /opt/src
+curl -LO https://get.helm.sh/helm-v3.15.4-linux-arm64.tar.gz
+tar -xzvf helm-v3.15.4-linux-arm64.tar.gz
+cp linux-arm64/helm /usr/local/bin
+```
+
+3. Install cilium
+```
+helm repo add cilium https://helm.cilium.io/
+kubectl create ns cilium
+helm install cilium cilium/cilium --namespace cilium --set kubeProxyReplacement=true --set k8sServiceHost=172.16.0.1 --set k8sServicePort=443 -->
+

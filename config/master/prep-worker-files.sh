@@ -7,14 +7,15 @@ ssh -o StrictHostKeyChecking=accept-new -i $SSH_KEY ubuntu@10.0.1.11 sudo mkdir 
 ssh -o StrictHostKeyChecking=accept-new -i $SSH_KEY ubuntu@10.0.1.12 sudo mkdir -p /opt/config /etc/kubernetes/pki
 
 # Prepare files
-cp /etc/kubernetes/pki/ca.crt /opt/config/worker1
-cp /etc/kubernetes/pki/ca.crt /opt/config/worker2
-cp /usr/local/bin/kubelet /opt/config/worker1
-cp /usr/local/bin/kubelet /opt/config/worker2
+cp /etc/kubernetes/pki/ca.crt /opt/config/worker1/
+cp /etc/kubernetes/pki/worker1* /opt/config/worker1/
+cp /etc/kubernetes/pki/ca.crt /opt/config/worker2/
+cp /etc/kubernetes/pki/worker2* /opt/config/worker2/
+cp /usr/local/bin/kubelet /opt/config/worker1/
+cp /usr/local/bin/kubelet /opt/config/worker2/
 
 # Copy files to worker1
-cp /etc/kubernetes/pki/ca.crt
-scp -i $SSH_KEY /opt/config/worker1 ubuntu@10.0.1.11:/opt/config
+scp -i $SSH_KEY -r /opt/config/worker1 ubuntu@10.0.1.11:/opt/config
 
 # Copy files to worker2
-scp -i $SSH_KEY /opt/config/worker2 ubuntu@10.0.1.11:/opt/config
+scp -i $SSH_KEY -r /opt/config/worker2 ubuntu@10.0.1.12:/opt/config

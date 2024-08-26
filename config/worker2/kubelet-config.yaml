@@ -20,5 +20,5 @@ runtimeRequestTimeout: "2m"
 staticPodPath: "/etc/kubernetes/manifests"
 containerRuntimeEndpoint: "unix:///var/run/containerd/containerd.sock"
 kubeletCgroups: "/system.slice/kubelet.service"
-tlsCertFile: /etc/kubernetes/pki/master.crt
-tlsPrivateKeyFile: /etc/kubernetes/pki/master.key
+tlsCertFile: /etc/kubernetes/pki/worker2.crt
+tlsPrivateKeyFile: /etc/kubernetes/pki/worker2.key

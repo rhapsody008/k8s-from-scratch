@@ -100,3 +100,7 @@ cat << EOF | tee $CNI_CONFIG_DIR/10-containerd-net.conflist
 EOF
 
 echo 'cni-plugin installed!'
+
+# Enable IP forwarding
+sysctl net.ipv4.ip_forward=1
+sysctl -p

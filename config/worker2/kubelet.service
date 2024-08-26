@@ -1,0 +1,22 @@
+[Unit]
+Description=Kubelet: The Kubernetes Node Agent
+Documentation=https://kubernetes.io/docs/
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+ExecStart=/usr/local/bin/kubelet \
+  --config=/var/lib/kubernetes/kubelet-config.yaml \
+  --kubeconfig=/etc/kubernetes/kubelet.conf \
+  --runtime-cgroups=/system.slice/containerd.service \
+  --hostname-override=worker2
+Restart=always
+RestartSec=10
+StartLimitInterval=0
+RestartSec=10
+LimitNOFILE=1048576
+LimitNPROC=infinity
+LimitCORE=infinity
+
+[Install]
+WantedBy=multi-user.target
