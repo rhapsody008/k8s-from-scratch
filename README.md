@@ -156,7 +156,7 @@ Execute cert generation scripts:
   sudo su
   ```
 
-2. Copy etcd manifest file:
+2. Start `etcd` by copying etcd manifest file:
   ```
   cp /opt/config/master/etcd.yaml /etc/kubernetes/manifests/
 
@@ -167,7 +167,7 @@ Execute cert generation scripts:
   nerdctl -n k8s.io ps
   ```
 
-4. Copy kube-apiserver manifest file:
+4. Start `kube-apiserver` by copying kube-apiserver manifest file:
   ```
   cp /opt/config/master/kube-apiserver.yaml /etc/kubernetes/manifests/
   ```
