@@ -49,19 +49,19 @@ Network Information:
 **Note: Container Runtime and kubeadm/kubelet/kubectl are downloaded in node init scripts [nodes/scripts/master-bootstrap.sh](nodes/scripts/master-bootstrap.sh)**
 
 1. start up and setup container runtime on nodes: 
-  ```
-  make startup
-  ```
+```
+make startup
+```
 
 2. bring down the nodes:
-  ```
-  make cleanup
-  ```
+```
+make cleanup
+```
 
 3. connect to master-node:
-  ```
-  make connect
-  ```
+```
+make connect
+```
 
 ## Deploy using Kubeadm
 Please follow [docs/Deploy_From_Kubeadm.md](docs/Deploy_From_Kubeadm.md)
@@ -70,3 +70,8 @@ Please follow [docs/Deploy_From_Kubeadm.md](docs/Deploy_From_Kubeadm.md)
 Please follow [docs/Deploy_From_Scratch.md](docs/Deploy_From_Scratch.md)
 
 
+## Useful command
+### Check raw apis
+```
+curl --cert /etc/kubernetes/pki/admin.crt --key /etc/kubernetes/pki/admin.key --cacert /etc/kubernetes/pki/ca.crt https://127.0.0.1:6443
+```
