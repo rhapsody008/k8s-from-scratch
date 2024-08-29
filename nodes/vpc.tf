@@ -17,6 +17,21 @@ resource "aws_eip" "master_node_eip" {
   associate_with_private_ip = var.master_node_private_ip
   depends_on                = [aws_internet_gateway.k8s_igw]
 }
+resource "aws_eip" "worker_node_1_eip" {
+  domain = "vpc"
+
+  instance                  = aws_instance.worker_node_1.id
+  associate_with_private_ip = var.worker_node_1_private_ip
+  depends_on                = [aws_internet_gateway.k8s_igw]
+}
+
+resource "aws_eip" "worker_node_2_eip" {
+  domain = "vpc"
+
+  instance                  = aws_instance.worker_node_2.id
+  associate_with_private_ip = var.worker_node_2_private_ip
+  depends_on                = [aws_internet_gateway.k8s_igw]
+}
 
 # Subnets
 resource "aws_subnet" "k8s_public_subnet" {

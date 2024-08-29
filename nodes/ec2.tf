@@ -26,7 +26,7 @@ resource "aws_instance" "worker_node_1" {
   instance_type               = var.ec2_type_worker
   subnet_id                   = aws_subnet.k8s_public_subnet.id
   security_groups             = [aws_security_group.worker_node_sg.id]
-  associate_public_ip_address = false
+  associate_public_ip_address = true
   private_ip                  = var.worker_node_1_private_ip
 
   iam_instance_profile = "AmazonSSMRoleForInstancesQuickSetup"
@@ -43,7 +43,7 @@ resource "aws_instance" "worker_node_2" {
   instance_type               = var.ec2_type_worker
   subnet_id                   = aws_subnet.k8s_public_subnet.id
   security_groups             = [aws_security_group.worker_node_sg.id]
-  associate_public_ip_address = false
+  associate_public_ip_address = true
   private_ip                  = var.worker_node_2_private_ip
 
   iam_instance_profile = "AmazonSSMRoleForInstancesQuickSetup"
