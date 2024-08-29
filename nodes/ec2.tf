@@ -24,7 +24,7 @@ resource "aws_instance" "master_node" {
 resource "aws_instance" "worker_node_1" {
   ami                         = var.ec2_ami_id
   instance_type               = var.ec2_type_worker
-  subnet_id                   = aws_subnet.k8s_private_subnet.id
+  subnet_id                   = aws_subnet.k8s_public_subnet.id
   security_groups             = [aws_security_group.worker_node_sg.id]
   associate_public_ip_address = false
   private_ip                  = var.worker_node_1_private_ip
@@ -36,14 +36,12 @@ resource "aws_instance" "worker_node_1" {
     Name = "worker-node-1"
   }
   user_data = file("scripts/worker-bootstrap.sh")
-
-  depends_on = [aws_nat_gateway.k8s_nat_gateway]
 }
 
 resource "aws_instance" "worker_node_2" {
   ami                         = var.ec2_ami_id
   instance_type               = var.ec2_type_worker
-  subnet_id                   = aws_subnet.k8s_private_subnet.id
+  subnet_id                   = aws_subnet.k8s_public_subnet.id
   security_groups             = [aws_security_group.worker_node_sg.id]
   associate_public_ip_address = false
   private_ip                  = var.worker_node_2_private_ip
@@ -55,6 +53,4 @@ resource "aws_instance" "worker_node_2" {
     Name = "worker-node-2"
   }
   user_data = file("scripts/worker-bootstrap.sh")
-
-  depends_on = [aws_nat_gateway.k8s_nat_gateway]
 }

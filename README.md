@@ -18,8 +18,8 @@ Design:
 - master node can ssh into worker node
 
 Network Information:
-- Network: VPC (public_subnet: 10.0.0.0/24, private_subnet: 10.0.1.0/24)
-- Master node: controlplane (10.0.0.10)
+- Network: VPC (public_subnet: 10.0.1.0/24)
+- Master node: controlplane (10.0.1.10)
   - etcd (:2379)
   - kube-apiserver (:6443)
   - kube-scheduler (:10259)

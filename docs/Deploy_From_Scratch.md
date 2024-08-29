@@ -107,7 +107,7 @@ cp linux-arm64/helm /usr/local/bin
 ```
 helm repo add cilium https://helm.cilium.io/
 chown root:root /opt/cni/bin
-helm install cilium cilium/cilium --namespace kube-system --set kubeProxyReplacement=true --set k8sServiceHost=10.0.0.10 --set k8sServicePort=6443
+helm install cilium cilium/cilium --namespace kube-system --set kubeProxyReplacement=true --set k8sServiceHost=10.0.1.10 --set k8sServicePort=6443
 ```
 
 ### Install cilium-cli

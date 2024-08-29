@@ -11,7 +11,7 @@ spec:
   containers:
   - command:
     - kube-apiserver
-    - --advertise-address=10.0.0.10
+    - --advertise-address=10.0.1.10
     - --allow-privileged=true
     - --authorization-mode=Node,RBAC
     - --client-ca-file=/etc/kubernetes/pki/ca.crt

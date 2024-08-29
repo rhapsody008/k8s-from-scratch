@@ -155,7 +155,7 @@ DNS.3 = kubernetes.default.svc
 DNS.4 = kubernetes.default.svc.cluster.local
 IP.1 = 172.16.0.1
 IP.2 = 127.0.0.1
-IP.3 = 10.0.0.10
+IP.3 = 10.0.1.10
 EOF
 
 openssl genrsa -out apiserver.key 2048
@@ -179,7 +179,7 @@ subjectAltName = @alt_names
 
 [ alt_names ]
 IP.1 = 127.0.0.1
-IP.2 = 10.0.0.10
+IP.2 = 10.0.1.10
 EOF
 openssl genrsa -out master.key 2048
 openssl req -new -key master.key -subj "/CN=master" -out master.csr -config master-node-openssl.cnf
