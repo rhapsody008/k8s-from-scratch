@@ -200,7 +200,7 @@ openssl x509 -req -in worker2.csr -CA ca.crt -CAkey ca.key -out worker2.crt
 # kube-proxy
 echo "Generating certificates for kube-proxy..."
 openssl genrsa -out kube-proxy.key 2048
-openssl req -new -key kube-proxy.key -subj "/CN=kube-proxy" -out kube-proxy.csr
+openssl req -new -key kube-proxy.key -subj "/CN=kube-proxy/O=system:node-proxier" -out kube-proxy.csr
 openssl x509 -req -in kube-proxy.csr -CA ca.crt -CAkey ca.key -out kube-proxy.crt
 
 # Completion
