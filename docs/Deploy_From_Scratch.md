@@ -15,8 +15,6 @@
 **All Steps below are executed in Nodes**
 
 ### Prepare Certificates
-
-Execute cert generation scripts:
   ```
   chmod +x /opt/config/master/generate-certs.sh
   /opt/config/master/generate-certs.sh
@@ -36,7 +34,7 @@ Execute cert generation scripts:
   mkdir -p /var/lib/kubernetes
   cp /opt/config/master/kubelet.conf /etc/kubernetes
   cp /opt/config/master/kubelet-config.yaml /var/lib/kubernetes
-  cp /opt/config/master/kubelet.service /lib/systemd/system
+  cp /opt/config/master/kubelet.service /usr/lib/systemd/system
   ```
 
 ### Start kubelet service:
@@ -50,7 +48,6 @@ Execute cert generation scripts:
 ### Start `etcd` 
   ```
   cp /opt/config/master/etcd.yaml /etc/kubernetes/manifests/
-
   ```
 
 ### Check container status
