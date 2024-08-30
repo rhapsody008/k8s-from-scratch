@@ -14,27 +14,26 @@ https://github.com/containerd/containerd/blob/main/docs/getting-started.md
 - master node can ssh into worker node
 
 ### Host Network Design
-- Network: AWS VPC (cidr: 10.0.0.0/16, public_subnet: 10.0.1.0/24)
-- Master node: `controlplane` (10.0.1.10)
-  - `kubelet` (:10250)
-  - `etcd` (:2379)
-  - `kube-apiserver` (:6443)
-  - `kube-scheduler` (:10259)
-  - `kube-controller-manager` (:10257)
+- Network: AWS VPC (cidr: `10.0.0.0/16`, public_subnet: `10.0.1.0/24`)
+- Master node: `master`
+  - private IP: `10.0.1.10`
+  - controlplane: 
+    - `etcd :2379`
+    - `kube-apiserver :6443`
+    - `kube-scheduler`
+    - `kube-controller-manager`
   - `kube-proxy` as DaemonSet
   - `coredns` as kube-dns clusterIP
-- Worker node: worker-node-1 (10.0.1.11)
-  - `kubelet` (:10250)
-  - `kube-proxy` (as DaemonSet)
-- Worker node: worker-node-2 (10.0.1.12)
-  - `kubelet` (:10250)
-  - `kube-proxy` (as DaemonSet)
+- Worker node: `worker1`
+  - private IP: `10.0.1.11`
+- Worker node: `worker2`
+  - private IP: `10.0.1.12`
 
 ### Cluster Network Design
-- Pod IP Range: `10.100.0.0/16`
-- Service IP Range: `172.16.0.0/16`
-- clusterDNS: `172.16.0.10`
-- kube-apiserver: `172.16.0.1`
+- Pod IP CIDR: `10.100.0.0/16`
+- Service IP CIDR: `172.16.0.0/16`
+- Cluster DNS: `172.16.0.10`
+- Kube-apiserver: `172.16.0.1`
 
 ### CNI: weave-net
 https://github.com/rajch/weave?tab=readme-ov-file#weave-net
