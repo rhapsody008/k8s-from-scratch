@@ -1,26 +1,12 @@
 # Deploy Everything from Scratch
 
-## Prepare Nodes K8s Components
-### Prepare directory and copy files into master node
-```
-make prep-files
-```
-
-### Connect to master-node and use root:
-```
-make connect
-sudo su
-```
-
-**All Steps below are executed in Nodes**
-
-### Prepare Certificates
+## Prepare Certificates
 ```
 chmod +x /opt/config/master/generate-certs.sh
 /opt/config/master/generate-certs.sh
 ```
 
-### Setup admin user kubeconfig
+## Setup admin user kubeconfig
 ```
 mkdir -p /root/.kube /home/ubuntu/.kube
 cp /opt/config/master/admin-kubeconfig /root/.kube/config

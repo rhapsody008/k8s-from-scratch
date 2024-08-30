@@ -85,6 +85,14 @@ resource "aws_security_group" "master_node_sg" {
     cidr_blocks = [var.public_subnet_cidr]
   }
 
+  ingress {
+    description = "Allow all internal traffic"
+    from_port   = 0
+    to_port     = 0
+    protocol    = "TCP"
+    cidr_blocks = [var.public_subnet_cidr]
+  }
+
   egress {
     from_port   = 0
     to_port     = 0
@@ -121,6 +129,14 @@ resource "aws_security_group" "worker_node_sg" {
     to_port     = 32767
     protocol    = "tcp"
     cidr_blocks = [var.ssh_ips] # Replace with your trusted IP range
+  }
+
+  ingress {
+    description = "Allow all internal traffic"
+    from_port   = 0
+    to_port     = 0
+    protocol    = "TCP"
+    cidr_blocks = [var.public_subnet_cidr]
   }
 
   egress {
