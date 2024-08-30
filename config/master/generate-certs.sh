@@ -117,7 +117,7 @@ extendedKeyUsage = serverAuth,clientAuth
 subjectAltName = @alt_names
 
 [alt_names]
-DNS.1 = controlplane
+DNS.1 = master
 DNS.2 = localhost
 IP.1 = 127.0.0.1
 IP.2 = 0:0:0:0:0:0:0:1
