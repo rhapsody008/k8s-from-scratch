@@ -89,61 +89,20 @@ cp /opt/config/master/weave-net.yaml /opt/src/k8s
 
 ```
 
-## Kube-proxy setup
+### Kube-proxy setup
 ```
 kubectl apply -f /opt/src/k8s/kube-proxy.yaml
 ```
 
-## CoreDNS setup
+### CoreDNS setup
 ```
 kubectl apply -f /opt/src/k8s/coredns.yaml
 ```
 **CoreDNS won't be ready until CNI has set up.**
 
-## CNI Setup
-Choose one of the two options:
-
-### Option 1 - Weave-Net
+### CNI Setup - Weave-Net
 ```
 kubectl apply -f /opt/src/k8s/weave-net.yaml
-```
-
-### Option 2 - Cilium (I like it!)
-
-1. Install Helm
-```
-cd /opt/src
-curl -LO https://get.helm.sh/helm-v3.15.4-linux-arm64.tar.gz
-tar -xzvf helm-v3.15.4-linux-arm64.tar.gz
-cp linux-arm64/helm /usr/local/bin
-```
-
-2. Install cilium
-```
-helm repo add cilium https://helm.cilium.io/
-chown root:root /opt/cni/bin
-helm install cilium cilium/cilium --namespace kube-system \
-                                  --set kubeProxyReplacement=false \
-                                  --set k8sServiceHost=10.0.1.10 \
-                                  --set k8sServicePort=6443 \
-                                  --set ipam.operator.clusterPoolIPv4PodCIDRList=10.100.0.0/16 \
-                                  --set policyEnforcementMode=never 
-```
-
-3. (Optional) Install cilium-cli
-```
-cd /opt/src
-CILIUM_CLI_VERSION=$(curl -s https://raw.githubusercontent.com/cilium/cilium-cli/main/stable.txt)
-CLI_ARCH=arm64
-curl -L --fail --remote-name-all https://github.com/cilium/cilium-cli/releases/download/${CILIUM_CLI_VERSION}/cilium-linux-${CLI_ARCH}.tar.gz{,.sha256sum}
-sha256sum --check cilium-linux-${CLI_ARCH}.tar.gz.sha256sum
-sudo tar xzvfC cilium-linux-${CLI_ARCH}.tar.gz /usr/local/bin
-rm cilium-linux-${CLI_ARCH}.tar.gz{,.sha256sum}
-```
-
-4. Check Cilium status
-```
-cilium status -n kube-system
 ```
 
 ## Worker Nodes setup
@@ -219,4 +178,46 @@ systemctl restart kubelet
 kubectl get nodes
 ```
 
+<!-- 
+### Option 2 - Cilium (I like it!)
 
+1. Install Helm
+```
+cd /opt/src
+curl -LO https://get.helm.sh/helm-v3.15.4-linux-arm64.tar.gz
+tar -xzvf helm-v3.15.4-linux-arm64.tar.gz
+cp linux-arm64/helm /usr/local/bin
+```
+
+2. Install cilium
+```
+helm repo add cilium https://helm.cilium.io/
+chown root:root /opt/cni/bin
+helm install cilium cilium/cilium --namespace kube-system \
+                                  --set kubeProxyReplacement=false \
+                                  --set k8sServiceHost=10.0.1.10 \
+                                  --set k8sServicePort=6443 \
+                                  --set ipam.operator.clusterPoolIPv4PodCIDRList=10.100.0.0/16 \
+                                  --set policyEnforcementMode=never \
+                                  --set policyAuditMode=true \
+                                  --set hostPort.enabled=true \
+                                  --set nodePort.enable=true \
+                                  --set routingMode=native \
+                                  --set autoDirectNodeRoutes=true
+```
+
+3. (Optional) Install cilium-cli
+```
+cd /opt/src
+CILIUM_CLI_VERSION=$(curl -s https://raw.githubusercontent.com/cilium/cilium-cli/main/stable.txt)
+CLI_ARCH=arm64
+curl -L --fail --remote-name-all https://github.com/cilium/cilium-cli/releases/download/${CILIUM_CLI_VERSION}/cilium-linux-${CLI_ARCH}.tar.gz{,.sha256sum}
+sha256sum --check cilium-linux-${CLI_ARCH}.tar.gz.sha256sum
+sudo tar xzvfC cilium-linux-${CLI_ARCH}.tar.gz /usr/local/bin
+rm cilium-linux-${CLI_ARCH}.tar.gz{,.sha256sum}
+```
+
+4. Check Cilium status
+```
+cilium status -n kube-system
+``` -->
