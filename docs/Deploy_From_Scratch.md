@@ -83,7 +83,6 @@ kubectl get po -n kube-system
 ### Copy files
 ```
 mkdir -p /opt/src/k8s
-cp /opt/config/master/kube-proxy.conf /etc/kubernetes
 cp /opt/config/master/kube-proxy.yaml /opt/src/k8s
 cp /opt/config/master/coredns.yaml /opt/src/k8s
 cp /opt/config/master/weave-net.yaml /opt/src/k8s

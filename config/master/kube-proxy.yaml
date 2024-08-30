@@ -42,9 +42,6 @@ spec:
         - mountPath: /lib/modules
           name: lib-modules
           readOnly: true
-        - mountPath: /etc/kubernetes/kube-proxy.conf
-          name: kubeconfig
-          readOnly: true
         - mountPath: /etc/kubernetes/pki
           name: k8s-certs
           readOnly: true
@@ -78,10 +75,6 @@ spec:
           path: /etc/kubernetes/pki
           type: DirectoryOrCreate
         name: k8s-certs
-      - hostPath:
-          path: /etc/kubernetes/kube-proxy.conf
-          type: FileOrCreate
-        name: kubeconfig
   updateStrategy:
     rollingUpdate:
       maxSurge: 0
@@ -105,7 +98,7 @@ data:
       acceptContentTypes: ""
       burst: 0
       contentType: ""
-      kubeconfig: /etc/kubernetes/kube-proxy.conf
+      kubeconfig: /var/lib/kube-proxy/kubeconfig.conf
       qps: 0
     clusterCIDR: 10.100.0.0/16
     configSyncPeriod: 0s
@@ -165,6 +158,25 @@ data:
       networkName: ""
       rootHnsEndpointName: ""
       sourceVip: ""
+  kubeconfig.conf: |-
+    apiVersion: v1
+    kind: Config
+    clusters:
+    - cluster:
+        certificate-authority: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+        server: https://10.0.1.10:6443
+      name: default
+    contexts:
+    - context:
+        cluster: default
+        namespace: default
+        user: default
+      name: default
+    current-context: default
+    users:
+    - name: default
+      user:
+        tokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
 
 ---
 apiVersion: v1
