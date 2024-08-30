@@ -78,52 +78,32 @@ cp /opt/config/master/kube-scheduler.yaml /etc/kubernetes/manifests
 kubectl get po -n kube-system
 ```
 
-## Kube-proxy setup
+## Add-ons Configuration
+
+### Copy files
 ```
 mkdir -p /opt/src/k8s
 cp /opt/config/master/kube-proxy.conf /etc/kubernetes
 cp /opt/config/master/kube-proxy.yaml /opt/src/k8s
+cp /opt/config/master/coredns.yaml /opt/src/k8s
+cp /opt/config/master/weave-net.yaml /opt/src/k8s
+
+```
+
+## Kube-proxy setup
+```
 kubectl apply -f /opt/src/k8s/kube-proxy.yaml
 ```
 
 ## CoreDNS setup
 ```
-cp /opt/config/master/coredns.yaml /opt/src/k8s
 kubectl apply -f /opt/src/k8s/coredns.yaml
 ```
 **CoreDNS won't be ready until CNI has set up.**
 
-## CNI - Cilium setup
-
-### Install Helm
+## CNI - Weave net setup
 ```
-cd /opt/src
-curl -LO https://get.helm.sh/helm-v3.15.4-linux-arm64.tar.gz
-tar -xzvf helm-v3.15.4-linux-arm64.tar.gz
-cp linux-arm64/helm /usr/local/bin
-```
-
-### Install cilium
-```
-helm repo add cilium https://helm.cilium.io/
-chown root:root /opt/cni/bin
-helm install cilium cilium/cilium --namespace kube-system --set kubeProxyReplacement=true --set k8sServiceHost=10.0.1.10 --set k8sServicePort=6443 --set ipam.operator.clusterPoolIPv4PodCIDRList=10.100.0.0/16
-```
-
-### (Optional) Install cilium-cli
-```
-cd /opt/src
-CILIUM_CLI_VERSION=$(curl -s https://raw.githubusercontent.com/cilium/cilium-cli/main/stable.txt)
-CLI_ARCH=arm64
-curl -L --fail --remote-name-all https://github.com/cilium/cilium-cli/releases/download/${CILIUM_CLI_VERSION}/cilium-linux-${CLI_ARCH}.tar.gz{,.sha256sum}
-sha256sum --check cilium-linux-${CLI_ARCH}.tar.gz.sha256sum
-sudo tar xzvfC cilium-linux-${CLI_ARCH}.tar.gz /usr/local/bin
-rm cilium-linux-${CLI_ARCH}.tar.gz{,.sha256sum}
-```
-
-### Check Cilium status
-```
-cilium status -n kube-system
+kubectl apply -f /opt/src/k8s/weave-net.yaml
 ```
 
 ## Worker Nodes setup
@@ -135,7 +115,6 @@ chmod +x /opt/config/master/prep-worker-files.sh
 ```
 
 ### Connect to worker1 
-
 Open another terminal:
 ```
 # Connect to master
@@ -159,39 +138,85 @@ cp /opt/config/worker1/kubelet.service /usr/lib/systemd/system
 rm -rf /usr/lib/systemd/system/kubelet.service.d
 ```
 
-###Start kubelet service:
+### Start worker1 kubelet service:
 ```
 systemctl daemon-reload
 systemctl restart kubelet
 ```
 
-6. exit to master node and connect to worker 2:
-  ```
-  exit 
-  goworker2
-  sudo su
-  ```
+### Connect to worker2
+Open another terminal:
+```
+# Connect to master
+make connect
 
-7. set perms and copy files to correct locations
-  ```
-  chown root:root /opt/cni/bin
-  cp /opt/config/worker2/worker2* /etc/kubernetes/pki
-  cp /opt/config/worker2/ca.crt /etc/kubernetes/pki
-  cp /opt/config/worker2/kubelet.conf /etc/kubernetes
-  cp /opt/config/worker2/kubelet-config.yaml /var/lib/kubernetes
-  cp /opt/config/worker2/kubelet.service /lib/systemd/system
-  cp /opt/config/worker2/kubelet /usr/local/bin
-  ```
+# Connect to worker1
+goworker2
 
-8. Start kubelet service:
-  ```
-  systemctl daemon-reload
-  systemctl enable --now kubelet
-  ```
+# On worker 1, work as root
+sudo su
+```
+
+### set perms and copy files to correct locations
+```
+chown root:root /opt/cni/bin
+cp /opt/config/worker2/worker2* /etc/kubernetes/pki
+cp /opt/config/worker2/ca.crt /etc/kubernetes/pki
+cp /opt/config/worker2/kubelet.conf /etc/kubernetes
+cp /opt/config/worker2/kubelet-config.yaml /var/lib/kubernetes
+cp /opt/config/worker2/kubelet.service /usr/lib/systemd/system
+rm -rf /usr/lib/systemd/system/kubelet.service.d
+```
+
+### Start kubelet service
+```
+systemctl daemon-reload
+systemctl restart kubelet
+```
+
+### Check node registration status on Master Node:
+```
+kubectl get nodes
+```
 
 
+<!-- ## CNI - Cilium setup
 
+### Install Helm
+```
+cd /opt/src
+curl -LO https://get.helm.sh/helm-v3.15.4-linux-arm64.tar.gz
+tar -xzvf helm-v3.15.4-linux-arm64.tar.gz
+cp linux-arm64/helm /usr/local/bin
+```
 
+### Install cilium
+```
+helm repo add cilium https://helm.cilium.io/
+chown root:root /opt/cni/bin
+helm install cilium cilium/cilium --namespace kube-system \
+                                  --set kubeProxyReplacement=true \
+                                  --set k8sServiceHost=10.0.1.10 \
+                                  --set k8sServicePort=6443 \
+                                  --set ipam.operator.clusterPoolIPv4PodCIDRList=10.100.0.0/16 \
+                                  --set policyEnforcementMode=never \
+                                  --set hostPort.enabled=true \
+                                  --set nodePort.enabled=true \
+                                  --set endpointRoutes.enabled=true
+```
 
+### (Optional) Install cilium-cli
+```
+cd /opt/src
+CILIUM_CLI_VERSION=$(curl -s https://raw.githubusercontent.com/cilium/cilium-cli/main/stable.txt)
+CLI_ARCH=arm64
+curl -L --fail --remote-name-all https://github.com/cilium/cilium-cli/releases/download/${CILIUM_CLI_VERSION}/cilium-linux-${CLI_ARCH}.tar.gz{,.sha256sum}
+sha256sum --check cilium-linux-${CLI_ARCH}.tar.gz.sha256sum
+sudo tar xzvfC cilium-linux-${CLI_ARCH}.tar.gz /usr/local/bin
+rm cilium-linux-${CLI_ARCH}.tar.gz{,.sha256sum}
+```
 
-
+### Check Cilium status
+```
+cilium status -n kube-system
+``` -->
