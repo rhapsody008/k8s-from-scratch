@@ -88,7 +88,7 @@ resource "aws_security_group" "master_node_sg" {
   ingress {
     description = "Allow all internal traffic"
     from_port   = 0
-    to_port     = 0
+    to_port     = 65535
     protocol    = "TCP"
     cidr_blocks = [var.public_subnet_cidr]
   }
@@ -134,7 +134,7 @@ resource "aws_security_group" "worker_node_sg" {
   ingress {
     description = "Allow all internal traffic"
     from_port   = 0
-    to_port     = 0
+    to_port     = 65535
     protocol    = "TCP"
     cidr_blocks = [var.public_subnet_cidr]
   }
